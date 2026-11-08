@@ -1,0 +1,24 @@
+# BlameBox — run with:  docker compose up -d   then open http://<this-machine>:8080
+services:
+  blamebox:
+    image: ghcr.io/blamebox/blamebox:latest
+    container_name: blamebox
+    # Required: BlameBox must see your network as the host sees it (router, routes, DNS).
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - ./data:/data
+    environment:
+      TZ: Europe/Paris          # your time zone, for the dashboard and the report
+      BLAMEBOX_LANG: fr         # fr or en (alerts and report)
+      # BLAMEBOX_ISP: Orange    # shown on the report
+      # BLAMEBOX_LINE: Fibre
+      # --- alerts (optional) ---
+      # BLAMEBOX_NTFY_URL: https://ntfy.sh/pick-a-long-secret-topic
+      # BLAMEBOX_TELEGRAM_TOKEN: "123456:ABC..."
+      # BLAMEBOX_TELEGRAM_CHAT: "123456789"
+      # BLAMEBOX_WEBHOOK_URL: http://homeassistant.local:8123/api/webhook/blamebox
+      # --- protect the dashboard with a password (optional) ---
+      # BLAMEBOX_AUTH: admin:change-me
+      # --- try it with simulated outages ---
+      # BLAMEBOX_DEMO: "1"

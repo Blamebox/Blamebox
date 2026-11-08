@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0E1424">
+<title>BlameBox</title>
+<link rel="icon" href="static/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="static/app.css">
+</head>
+<body>
+<header class="wrap nav">
+  <a class="logo" href="./" aria-label="BlameBox">
+    <svg width="30" height="30" viewBox="0 0 100 100" aria-hidden="true"><path fill="#0E1424" stroke="#0E1424" stroke-width="2.5" stroke-linejoin="round" d="M43 48L75 64L75 69L43 85L11 69L11 64Z"/><path fill="#7D89A3" d="M11 64L43 80L75 64L75 69L43 85L11 69Z"/><path fill="#F2F5FA" d="M43 48L75 64L43 80L11 64Z"/><path fill="#0E1424" stroke="#0E1424" stroke-width="2.5" stroke-linejoin="round" d="M57 38L89 54L89 59L57 75L25 59L25 54Z"/><path fill="#C9A800" d="M25 54L57 70L89 54L89 59L57 75L25 59Z"/><path fill="#FFE135" d="M57 38L89 54L57 70L25 54Z"/><path fill="#0E1424" stroke="#0E1424" stroke-width="2.5" stroke-linejoin="round" d="M43 14L75 30L75 35L43 51L11 35L11 30Z"/><path fill="#7D89A3" d="M11 30L43 46L75 30L75 35L43 51L11 35Z"/><path fill="#F2F5FA" d="M43 14L75 30L43 46L11 30Z"/></svg>
+    <span><b>Blame</b>Box</span>
+  </a>
+  <div class="navr">
+    <span id="demo" class="demo" hidden data-t="demo">DÉMO</span>
+    <button id="lang" class="ghost" type="button" aria-label="Language">EN</button>
+    <a id="reportLink" class="btn small" href="report"><span class="long" data-t="report">Rapport opérateur</span><span class="short" data-t="report_short">Rapport</span></a>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="demoCta" class="banner cta" hidden><span data-t="demo_cta">Démo avec des données simulées, figée pendant une coupure.</span> <a href="../" data-t="demo_join">Rejoindre la liste d'attente →</a></div>
+  <div id="banner" class="banner" hidden></div>
+
+  <section id="hero" class="hero" data-status="loading" aria-live="polite">
+    <div class="hero-top">
+      <span class="pill" id="pill"><i></i><span id="pillText" data-t="loading">Chargement…</span></span>
+      <span class="muted" id="since"></span>
+    </div>
+    <h1 id="title">BlameBox</h1>
+    <p id="body" class="lead"></p>
+    <p id="advice" class="advice" hidden></p>
+    <ol class="chain" id="chain">
+      <li data-layer="box"><span class="ic" aria-hidden="true"></span><span class="nm" data-t="l_box">Box</span><span class="sub" id="m-box"></span></li>
+      <li data-layer="internet"><span class="ic" aria-hidden="true"></span><span class="nm">Internet</span><span class="sub" id="m-internet"></span></li>
+      <li data-layer="dns"><span class="ic" aria-hidden="true"></span><span class="nm">DNS</span><span class="sub" id="m-dns"></span></li>
+      <li data-layer="web"><span class="ic" aria-hidden="true"></span><span class="nm">Web</span><span class="sub" id="m-web"></span></li>
+    </ol>
+  </section>
+
+  <section class="tiles" aria-label="Indicateurs">
+    <div class="tile"><div class="v" id="k-gw">–</div><div class="l" data-t="k_gw">Latence vers la box</div></div>
+    <div class="tile"><div class="v" id="k-net">–</div><div class="l" data-t="k_net">Latence vers Internet</div></div>
+    <div class="tile"><div class="v" id="k-loss">–</div><div class="l" data-t="k_loss">Pertes vers Internet (10 min)</div></div>
+    <div class="tile"><div class="v" id="k-avail">–</div><div class="l" data-t="k_avail">Disponibilité sur 7 jours</div></div>
+  </section>
+
+  <section class="card">
+    <div class="card-h">
+      <h2 data-t="history">Historique</h2>
+      <div class="seg" role="tablist">
+        <button type="button" data-range="24" class="on" role="tab" data-t="r24">24 h</button>
+        <button type="button" data-range="168" role="tab" data-t="r7">7 jours</button>
+      </div>
+    </div>
+    <div id="strip" class="strip" role="img"></div>
+    <div id="stripAxis" class="axis"></div>
+    <div class="legend">
+      <span><i class="ok"></i><span data-t="lg_ok">En ligne</span></span>
+      <span><i class="degraded"></i><span data-t="lg_deg">Pertes</span></span>
+      <span><i class="down"></i><span data-t="lg_down">Coupure</span></span>
+      <span><i class="none"></i><span data-t="lg_none">Pas de mesure</span></span>
+    </div>
+    <div id="chart" class="chart"></div>
+  </section>
+
+  <section class="card">
+    <div class="card-h">
+      <h2 data-t="incidents">Incidents</h2>
+      <a class="link" id="exportLink" href="api/export/incidents.csv" data-t="export">Exporter (CSV)</a>
+    </div>
+    <ul id="incidents" class="incidents"></ul>
+    <button type="button" id="more" class="ghost wide" hidden data-t="more">Voir plus</button>
+  </section>
+
+  <section class="card">
+    <details>
+      <summary data-t="settings">Comment BlameBox mesure</summary>
+      <dl id="info" class="info"></dl>
+      <div class="alerts">
+        <span id="alertsText"></span>
+        <button type="button" id="testAlert" class="ghost" hidden data-t="test">Envoyer une alerte de test</button>
+        <span id="testResult" class="muted"></span>
+      </div>
+    </details>
+  </section>
+</main>
+
+<footer class="wrap foot">
+  <span><b>Blame</b>Box <span id="version"></span></span>
+  <a href="https://github.com/blamebox/blamebox" rel="noopener">GitHub</a>
+</footer>
+<script src="static/app.js"></script>
+</body>
+</html>

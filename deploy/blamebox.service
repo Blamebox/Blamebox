@@ -1,0 +1,33 @@
+# systemd unit for running the BlameBox binary without Docker (e.g. Raspberry Pi OS).
+#
+#   sudo install -m 755 blamebox-linux-arm64 /usr/local/bin/blamebox
+#   sudo cp blamebox.service /etc/systemd/system/
+#   sudo systemctl enable --now blamebox
+#
+# Then open http://<pi-address>:8080
+[Unit]
+Description=BlameBox — finds out who is to blame when the Internet drops
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/blamebox
+Environment=BLAMEBOX_DATA_DIR=/var/lib/blamebox
+Environment=BLAMEBOX_LANG=fr
+Environment=TZ=Europe/Paris
+# Alerts (optional):
+# Environment=BLAMEBOX_NTFY_URL=https://ntfy.sh/pick-a-long-secret-topic
+DynamicUser=yes
+StateDirectory=blamebox
+# Lets an unprivileged user send real ICMP pings.
+AmbientCapabilities=CAP_NET_RAW
+CapabilityBoundingSet=CAP_NET_RAW
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

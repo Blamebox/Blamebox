@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="{{.Lang}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{.L.title}} — BlameBox</title>
+<link rel="icon" href="{{.Assets}}favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="{{.Assets}}report.css">
+</head>
+<body>
+<div class="bar">
+  <a href="{{if .Static}}index.html{{else}}./{{end}}">{{.L.back}}</a>
+  <span class="pro">{{.L.pro}}</span>
+  <span class="grow"></span>
+  {{if not .Static}}<span class="days">{{range .DayChoices}}<a href="?days={{.}}&amp;lang={{$.Lang}}"{{if eq . $.Days}} class="on"{{end}}>{{.}} {{if eq . 1}}{{$.L.day}}{{else}}{{$.L.days}}{{end}}</a>{{end}}</span>
+  <a href="?days={{.Days}}&amp;lang={{if eq .Lang "fr"}}en{{else}}fr{{end}}">{{if eq .Lang "fr"}}EN{{else}}FR{{end}}</a>{{else}}
+  <a href="report-{{if eq .Lang "fr"}}en{{else}}fr{{end}}.html">{{if eq .Lang "fr"}}EN{{else}}FR{{end}}</a>{{end}}
+  <button type="button" id="print" class="btn">{{.L.print}}</button>
+</div>
+
+<div class="top">
+  <div>
+    <div class="brand"><svg width="30" height="30" viewBox="0 0 100 100" aria-hidden="true"><path fill="#FFFFFF" stroke="#FFFFFF" stroke-width="2.5" stroke-linejoin="round" d="M43 48L75 64L75 69L43 85L11 69L11 64Z"/><path fill="#5A6888" d="M11 64L43 80L75 64L75 69L43 85L11 69Z"/><path fill="#0E1424" d="M43 48L75 64L43 80L11 64Z"/><path fill="#FFFFFF" stroke="#FFFFFF" stroke-width="2.5" stroke-linejoin="round" d="M57 38L89 54L89 59L57 75L25 59L25 54Z"/><path fill="#A86F00" d="M25 54L57 70L89 54L89 59L57 75L25 59Z"/><path fill="#E59A00" d="M57 38L89 54L57 70L25 54Z"/><path fill="#FFFFFF" stroke="#FFFFFF" stroke-width="2.5" stroke-linejoin="round" d="M43 14L75 30L75 35L43 51L11 35L11 30Z"/><path fill="#5A6888" d="M11 30L43 46L75 30L75 35L43 51L11 35Z"/><path fill="#0E1424" d="M43 14L75 30L43 46L11 30Z"/></svg><span><b>Blame</b>Box</span></div>
+    <h1>{{.L.title}}</h1>
+    <div class="sub">{{.Period}}{{if .ISP}} · {{.L.isp}} : {{.ISP}}{{end}}{{if .Line}} · {{.L.line}} : {{.Line}}{{end}} · {{.L.generated}} {{.Generated}}</div>
+  </div>
+  {{if .Demo}}<div class="tag">{{.L.demo}}</div>{{end}}
+</div>
+
+<div class="kpis">{{range .KPIs}}<div class="k"><div class="v">{{.Value}}</div><div class="l">{{.Label}}</div></div>{{end}}</div>
+<div class="verdict">{{.Verdict}}</div>
+
+<h2>{{.L.timeline}}</h2>
+{{.Timeline}}
+<div class="legend"><span><i style="background:#E5484D"></i>{{.L.legend_isp}}</span><span><i style="background:#F5A524"></i>{{.L.legend_dns}}</span><span><i style="background:#8A94A6"></i>{{.L.legend_lan}}</span><span><i style="background:#FB923C"></i>{{.L.legend_loss}}</span></div>
+
+<h2>{{.L.s_outages}}</h2>
+{{if .Outages}}
+<div class="tw"><table>
+<tr><th>{{.L.h_day}}</th><th>{{.L.h_time}}</th><th class="r">{{.L.h_dur}}</th><th>{{.L.h_inc}}</th><th>{{.L.h_proof}}</th><th>{{.L.h_side}}</th></tr>
+{{range .Outages}}<tr><td>{{.Day}}</td><td>{{.Time}}</td><td class="r">{{.Duration}}</td><td><i class="dot" style="background:{{.Color}}"></i>{{.Cause}}</td><td class="muted">{{.Proof}}</td><td>{{.Side}}</td></tr>
+{{end}}</table></div>
+{{else}}<p class="muted">{{.L.no_outage}}</p>{{end}}
+
+{{if .Degrades}}
+<h2>{{.L.s_degr}}</h2>
+<div class="tw"><table>
+<tr><th>{{.L.h_day}}</th><th>{{.L.h_time}}</th><th class="r">{{.L.h_dur}}</th><th>{{.L.h_inc}}</th><th>{{.L.h_proof}}</th><th>{{.L.h_side}}</th></tr>
+{{range .Degrades}}<tr><td>{{.Day}}</td><td>{{.Time}}</td><td class="r">{{.Duration}}</td><td><i class="dot" style="background:{{.Color}}"></i>{{.Cause}}</td><td class="muted">{{.Proof}}</td><td>{{.Side}}</td></tr>
+{{end}}</table></div>
+{{end}}
+
+<div class="page2">
+{{if .HasLoss}}
+<h2>{{.L.loss_title}}</h2>
+{{.LossChart}}
+<p class="note">{{.L.loss_note}}</p>
+{{end}}
+
+<h2>{{.L.s_msg}} <button type="button" id="copy" class="btn small" data-done="{{.L.copied}}">{{.L.copy}}</button></h2>
+<div class="msg" id="msg">{{.Message}}</div>
+
+<h2>{{.L.s_method}}</h2>
+<ul class="method">{{range .Method}}<li>{{.}}</li>{{end}}</ul>
+<div class="foot">{{.L.footer}}</div>
+</div>
+<script src="{{.Assets}}report.js"></script>
+</body>
+</html>
