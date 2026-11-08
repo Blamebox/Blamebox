@@ -1,0 +1,19 @@
+name: Décompresser
+on:
+  push:
+    paths: ["*.zip"]
+permissions:
+  contents: write
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Décompresser et publier
+        run: |
+          for z in *.zip; do unzip -o "$z" && git rm -q "$z"; done
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Décompression de l'archive" || exit 0
+          git push
